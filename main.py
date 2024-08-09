@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -29,9 +30,10 @@ COUNTERCLOCKWISE = {
     'right': 'up',
 }
 
-def invert_position(field, position):
+def invert_position(field: List[List[int]],
+                    position: Tuple[int, int]) -> None:
     """
-    меняет цвет клетки
+    меняет цвет клетки по месту
     """
     x = position[0]
     y = position[1]
@@ -40,7 +42,9 @@ def invert_position(field, position):
     else:
         field[x][y] = white
 
-def get_color(field, position):
+
+def get_color(field: List[List[int]],
+              position: Tuple[int, int]) -> int:
     """
     возвращает цвет клетки по координатам
     """
@@ -48,16 +52,20 @@ def get_color(field, position):
     y = position[1]
     return field[x][y]
 
-def rotate_ant(color, current_direction):
+
+def rotate_ant(color: int,
+               current_direction: str) -> str:
     """
-    Поворачивает муравья в зависимости от цвета
+    Поворачивает муравья в зависимости от цвета, возвращает новое направление
     """
     if color == white:
         return CLOCKWISE[current_direction]
     else:
         return COUNTERCLOCKWISE[current_direction]
 
-def move_ant(position, direction):
+
+def move_ant(position: Tuple[int, int],
+             direction: str) -> Tuple[int, int]:
     """
     'Перемещает' муравья - возвращает новую координату
     в зависимости от текущего направления
@@ -73,8 +81,11 @@ def move_ant(position, direction):
             return (x+1, y)
         case _:
             return (x, y+1)
-    
-def get_ant_way(ant_position, ant_direction, field):
+
+
+def get_ant_way(ant_position: Tuple[int, int],
+                ant_direction: str,
+                field: List[List[int]]) -> List[List[int]]:
     """
     Возвращает полный путь муравья
     """
@@ -85,6 +96,7 @@ def get_ant_way(ant_position, ant_direction, field):
         ant_position = move_ant(ant_position, ant_direction)
 
     return field
+
 
 def test_get_ant_way():
     """
@@ -109,7 +121,8 @@ def test_get_ant_way():
     test_ant_way = get_ant_way(test_ant_position, test_ant_direction, test_field)
     assert test_ant_way == test_result
 
-def get_way_image(field):
+
+def get_way_image(field: List[List[int]]):
     """
     Созраняет изображение пути муравья в файл 'result.png'
     """
@@ -118,6 +131,7 @@ def get_way_image(field):
     plt.imshow(matrix, cmap='gray')
     plt.show()
     plt.savefig('result.png')
+
 
 def main():
     prod_field = [
