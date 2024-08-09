@@ -30,6 +30,9 @@ COUNTERCLOCKWISE = {
 }
 
 def invert_position(field, position):
+    """
+    меняет цвет клетки
+    """
     x = position[0]
     y = position[1]
     if field[x][y] == white:
@@ -37,18 +40,28 @@ def invert_position(field, position):
     else:
         field[x][y] = white
 
-def get_color(position):
+def get_color(field, position):
+    """
+    возвращает цвет клетки по координатам
+    """
     x = position[0]
     y = position[1]
     return field[x][y]
 
 def rotate_ant(color, current_direction):
+    """
+    Поворачивает муравья в зависимости от цвета
+    """
     if color == white:
         return CLOCKWISE[current_direction]
     else:
         return COUNTERCLOCKWISE[current_direction]
 
 def move_ant(position, direction):
+    """
+    'Перемещает' муравья - возвращает новую координату
+    в зависимости от текущего направления
+    """
     x = position[0]
     y = position[1]
     match direction:
@@ -61,30 +74,66 @@ def move_ant(position, direction):
         case _:
             return (x, y+1)
     
-field = [
-    [
-        1 for row in range(0, FIELD_SIZE)
-    ] for i in range(0, FIELD_SIZE)
-]
-
-def main():
-    ant_position = (MIDDLE_POINT, MIDDLE_POINT)
-    ant_direction = INITIAL_DIRECTION
-
+def get_ant_way(ant_position, ant_direction, field):
+    """
+    Возвращает полный путь муравья
+    """
     while (ant_position[0] != 0) and (ant_position[0] != FIELD_SIZE - 1) and (ant_position[1] != 0) and (ant_position[1] != FIELD_SIZE - 1):
-        color = get_color(ant_position)
+        color = get_color(field, ant_position)
         ant_direction = rotate_ant(color, ant_direction)
         invert_position(field, ant_position)
         ant_position = move_ant(ant_position, ant_direction)
 
-    # for row in field:
-    #     print(row)
+    return field
 
+def test_get_ant_way():
+    """
+    Тест пути муравья для поля 7х7
+    """
+    test_field = [
+        [
+            1 for row in range(0, 7)
+        ] for i in range(0, 7)
+    ]
+    test_ant_position = (3, 3)
+    test_ant_direction = INITIAL_DIRECTION
+    test_result = [
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 0, 0, 1, 1, 1],
+        [1, 0, 1, 1, 0, 1, 1],
+        [1, 1, 0, 1, 0, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1]
+    ]
+    test_ant_way = get_ant_way(test_ant_position, test_ant_direction, test_field)
+    assert test_ant_way == test_result
+
+def get_way_image(field):
+    """
+    Созраняет изображение пути муравья в файл 'result.png'
+    """
     matrix = np.array(field)
 
     plt.imshow(matrix, cmap='gray')
     plt.show()
     plt.savefig('result.png')
 
+def main():
+    prod_field = [
+        [
+            1 for row in range(0, FIELD_SIZE)
+        ] for i in range(0, FIELD_SIZE)
+    ]
+    ant_position = (MIDDLE_POINT, MIDDLE_POINT)
+    ant_direction = INITIAL_DIRECTION
+
+    test_get_ant_way()
+
+    result_field = get_ant_way(ant_position, ant_direction, prod_field)
+
+    get_way_image(result_field)
+
+
 if __name__ == '__main__':
-  main()
+    main()
